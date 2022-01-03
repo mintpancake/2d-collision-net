@@ -1,6 +1,10 @@
 import numpy as np
 
 
+OBJ_NAME = 'obj'
+SCENE_NAME = 'scene'
+DATA_NAME = 'data1'
+
 def load(file):
     v = []
     f = open(file, 'r')
@@ -42,10 +46,21 @@ def sample(v, n):
     return boundary_points
 
 
+def normalize(v):
+    g = np.mean(v, axis=0)
+    return v - g
+
+
 if __name__ == "__main__":
-    scn = load('scene.txt')
-    obj = load('object.txt')
-    sc = sample(scn, 6000)
-    oc = sample(obj, 2000)
-    save(sc, 'scene_point_cloud.txt')
-    save(oc, 'object_point_cloud.txt')
+    scene = load(f'raw/{SCENE_NAME}.txt')
+    obj = load(f'raw/{OBJ_NAME}.txt')
+    obj_normalized = normalize(obj)
+    scene_centered = scene - np.array([0.5, 0.5])
+    save(obj_normalized, f'raw/{OBJ_NAME}_norm.txt')
+    save(scene_centered, f'raw/{SCENE_NAME}_norm.txt')
+    scene_pc = sample(scene_centered, 4000)
+    obj_pc = sample(obj_normalized, 4000)
+    save(scene_pc, f'data/{DATA_NAME}/scene_pc/{SCENE_NAME}_pc.txt')
+    save(obj_pc, f'data/{DATA_NAME}/obj_pc/{OBJ_NAME}_pc.txt')
+    save(scene_pc, f'data/{DATA_NAME}_test/scene_pc/{SCENE_NAME}_pc.txt')
+    save(obj_pc, f'data/{DATA_NAME}_test/obj_pc/{OBJ_NAME}_pc.txt')

@@ -3,18 +3,34 @@ from torch.utils.data import Dataset
 
 
 class Data(Dataset):
-    def __init__(self, sc_file, oc_file, gt_file):
-        self.sc = self.load(sc_file)
-        self.oc = self.load(oc_file)
-        self.pos = torch.Tensor([0, 0])
-        self.label = self.load_gt(gt_file)
+    def __init__(self, data, scene, obj, start, stop):
+        self.num = stop-start
+        self.scene_pc = self.load(f'data/{data}/scene_pc/{scene}_pc.txt')
+        self.pos = []
+        self.label = []
+        for i in range(start, stop):
+            self.pos.append(self.load_pos(f'data/{data}/pos/pos_{i}.txt'))
+            self.label.append(self.load_gt(f'data/{data}/gt/gt_{i}.txt'))
+        self.scene_pc = torch.Tensor(self.scene_pc)
+        self.pos = torch.Tensor(self.pos)
+        self.label = torch.Tensor(self.label)
+
+        # self.obj_pc = self.load(f'data/{data}/obj_pc/{obj}_pc.txt')
+        # self.obj_pc = torch.Tensor(self.obj_pc)
+
+        self.obj_pc = []
+        for i in range(start, stop):
+            self.obj_pc.append(
+                self.load(f'data/{data}/obj_pc/moved/{obj}_pc_{i}.txt'))
+        self.obj_pc = torch.Tensor(self.obj_pc)
 
     def __getitem__(self, index):
-        data = [self.sc, self.oc, self.pos]
-        return data, self.label
+        data = [self.scene_pc, self.obj_pc[index], self.pos[index]]
+        # data = [self.scene_pc, self.obj_pc, self.pos[index]]
+        return data, self.label[index]
 
     def __len__(self):
-        return 1
+        return self.num
 
     def load(self, file):
         data = []
@@ -26,7 +42,16 @@ class Data(Dataset):
             data.append([x, y])
             line = f.readline()
         f.close()
-        return torch.Tensor(data)
+        return data
+
+    def load_pos(self, file):
+        f = open(file, 'r')
+        line = f.readline()
+        x, y = line.strip('\n').split(' ')
+        x, y = float(x), float(y)
+        data = [x, y]
+        f.close()
+        return data
 
     def load_gt(self, file):
         data = []
@@ -37,4 +62,4 @@ class Data(Dataset):
             data.append(gt)
             line = f.readline()
         f.close()
-        return torch.Tensor(data)
+        return data
