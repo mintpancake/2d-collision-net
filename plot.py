@@ -1,5 +1,5 @@
 import matplotlib.pyplot as plt
-from utils import read_config
+from utils import ensure_dir, read_config
 
 CFG = read_config()
 DATA = CFG['data_name']
@@ -29,7 +29,8 @@ if __name__ == "__main__":
     plt.xlabel('Epoch')
     plt.ylabel('BCEWithLogitsLoss')
     plt.grid()
-    plt.savefig(f'graphs/{DATA}/train_loss', bbox_inches='tight')
+    ensure_dir(f'graphs/{DATA}/train_loss.png')
+    plt.savefig(f'graphs/{DATA}/train_loss.png', bbox_inches='tight')
     plt.close('all')
 
     x, y = read(f'logs/{DATA}/train_error.csv')
@@ -38,6 +39,7 @@ if __name__ == "__main__":
     plt.xlabel('Epoch')
     plt.ylabel('Average missclassified grids')
     plt.grid()
+    ensure_dir(f'graphs/{DATA}/train_error.png')
     plt.savefig(f'graphs/{DATA}/train_error.png', bbox_inches='tight')
     plt.close('all')
 
@@ -47,6 +49,7 @@ if __name__ == "__main__":
     plt.xlabel('Epoch')
     plt.ylabel('BCEWithLogitsLoss')
     plt.grid()
+    ensure_dir(f'graphs/{DATA}/val_loss.png')
     plt.savefig(f'graphs/{DATA}/val_loss.png', bbox_inches='tight')
     plt.close('all')
 
@@ -56,6 +59,7 @@ if __name__ == "__main__":
     plt.xlabel('Epoch')
     plt.ylabel('Average missclassified grids')
     plt.grid()
+    ensure_dir(f'graphs/{DATA}/val_error.png')
     plt.savefig(f'graphs/{DATA}/val_error.png', bbox_inches='tight')
     plt.close('all')
 
