@@ -1,10 +1,13 @@
 import numpy as np
+from utils import ensure_dir, read_config
 
-DATA_NAME = 'data1'
-OBJ_NAME = 'obj'
-SCENE_NAME = 'scene'
-N_PAIR = 1000
-CUT_SIZE = 20
+
+CFG = read_config()
+OBJ_NAME = CFG['obj_name']
+SCENE_NAME = CFG['scene_name']
+DATA_NAME = CFG['data_name']
+N_PAIR = CFG['data_size']
+CUT_SIZE = CFG['cut_size']
 
 
 def load(file):
@@ -20,6 +23,7 @@ def load(file):
 
 
 def save_points(file, data):
+    ensure_dir(file)
     f = open(file, 'w')
     for datum in data:
         f.write(f'{datum[0]} {datum[1]}\n')
@@ -27,6 +31,7 @@ def save_points(file, data):
 
 
 def save_gt(file, data):
+    ensure_dir(file)
     f = open(file, 'w')
     for datum in data:
         f.write(f'{datum}\n')

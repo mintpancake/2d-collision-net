@@ -1,9 +1,12 @@
 import numpy as np
+from utils import ensure_dir, read_config
 
 
-OBJ_NAME = 'obj'
-SCENE_NAME = 'scene'
-DATA_NAME = 'data1'
+CFG = read_config()
+OBJ_NAME = CFG['obj_name']
+SCENE_NAME = CFG['scene_name']
+DATA_NAME = CFG['data_name']
+
 
 def load(file):
     v = []
@@ -18,6 +21,7 @@ def load(file):
 
 
 def save(data, file):
+    ensure_dir(file)
     f = open(file, 'w')
     for datum in data:
         f.write(f'{datum[0]} {datum[1]}\n')

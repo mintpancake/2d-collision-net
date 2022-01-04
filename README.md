@@ -1,1 +1,1 @@
-# 2d-collision-net
+A nerual network for collision prediction

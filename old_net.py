@@ -4,8 +4,10 @@ import torch.nn as nn
 from pytorch_utils import FC, Conv1d, Conv2d
 import torch_scatter
 from torch.cuda.amp import autocast
+from utils import read_config
 
-CUT_SIZE = 20
+CFG = read_config()
+CUT_SIZE = CFG['cut_size']
 
 SCENE_PT_MLP = [2, 128, 256]
 SCENE_VOX_MLP = [256, 512, 1024, 512]
@@ -131,7 +133,7 @@ class Net(nn.Module):
         stack_vox_features = stack_vox_features.reshape(
             *stack_vox_features.shape[:2], -1
         )
-        
+
         return stack_vox_features
 
     def get_obj_features(self, obj_pc):
@@ -215,4 +217,3 @@ class Net(nn.Module):
 # res = res.squeeze()
 # res = res.reshape(res.shape[0], 20, 20)
 # print(res.shape)
-

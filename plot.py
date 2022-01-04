@@ -1,6 +1,9 @@
 import matplotlib.pyplot as plt
+from utils import read_config
 
-DATA = 'data1'
+CFG = read_config()
+DATA = CFG['data_name']
+
 
 def read(file):
     epoch = []

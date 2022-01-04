@@ -2,15 +2,17 @@ import cv2
 import numpy as np
 import glob
 from PIL import Image
+from utils import ensure_dir, read_config
 
+CFG = read_config()
 SIDE_LENGTH = 800
 CANVAS_SIZE = (801, 801, 3)
-CUT_SIZE = 20
-N = 100
+CUT_SIZE = CFG['cut_size']
+N = CFG['test_data_size']
 
-DATA_NAME = 'data1_test'
-OBJ_NAME = 'obj'
-SCENE_NAME = 'scene'
+DATA_NAME = f"{CFG['data_name']}_test"
+OBJ_NAME = CFG['obj_name']
+SCENE_NAME = CFG['scene_name']
 
 MODE = 'pred'
 
@@ -93,4 +95,4 @@ if __name__ == '__main__':
 
     img, *imgs = [Image.open(f) for f in sorted(glob.glob(fp_in))]
     img.save(fp=fp_out, format='GIF', append_images=imgs,
-            save_all=True, duration=200, loop=0)
+             save_all=True, duration=200, loop=0)

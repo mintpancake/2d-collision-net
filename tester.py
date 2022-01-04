@@ -2,15 +2,17 @@ import math
 import torch
 from torch import nn
 from torch.utils.data import DataLoader
+from utils import ensure_dir, read_config
 
 from net import Net
 from dataset import Data
 
-DATA = 'data1'
-SCENE = 'scene'
-OBJ = 'obj'
-MODEL_NUMBER = 1000
-DATA_SIZE = 100
+CFG = read_config()
+DATA = CFG['data_name']
+SCENE = CFG['scene_name']
+OBJ = CFG['obj_name']
+MODEL_NUMBER = CFG['test_model_number']
+DATA_SIZE = CFG['test_data_size']
 
 if __name__ == '__main__':
     data_name = DATA
@@ -27,8 +29,10 @@ if __name__ == '__main__':
     print(f'Using {device}!')
 
     model = Net().to(device)
-    model.load_state_dict(torch.load(f'models/{data_name}/model_{MODEL_NUMBER}.pth'))
+    model.load_state_dict(torch.load(
+        f'models/{data_name}/model_{MODEL_NUMBER}.pth'))
 
+    ensure_dir(f'logs/{test_data_name}/test_error.csv')
     f = open(f'logs/{test_data_name}/test_error.csv', 'w')
     model.eval()
     with torch.no_grad():
@@ -52,6 +56,7 @@ if __name__ == '__main__':
     f.write(f'{error}\n')
     f.close()
     for i in range(DATA_SIZE):
+        ensure_dir(f'data/{test_data_name}/pred/pred_{i}.txt')
         f = open(f'data/{test_data_name}/pred/pred_{i}.txt', 'w')
         for datum in prob[i]:
             f.write(f'{int(datum)}\n')

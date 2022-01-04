@@ -5,8 +5,10 @@ from pytorch_utils import FC, Conv1d, Conv2d
 import torch_scatter
 from torch.cuda.amp import autocast
 from pointnet2_utils import PointNetSetAbstraction
+from utils import read_config
 
-CUT_SIZE = 20
+CFG = read_config()
+CUT_SIZE = CFG['cut_size']
 
 SCENE_PT_MLP = [2, 128, 256]
 SCENE_VOX_MLP = [256, 512, 1024, 512]
