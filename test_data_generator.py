@@ -48,7 +48,7 @@ def inside(p, scn):
 
 
 def trajectory(x):
-    y = x
+    y = -x
     return y
 
 
