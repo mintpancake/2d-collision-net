@@ -25,5 +25,11 @@ def run_without_regeneration():
     visualizer.run()
 
 
+def run_whatever():
+    plot.run()
+    test_data_generator.run()
+    tester.run()
+    visualizer.run()
+
 if __name__ == "__main__":
-    run_without_regeneration()
+    run_whatever()

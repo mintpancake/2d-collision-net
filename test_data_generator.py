@@ -5,7 +5,7 @@ from utils import ensure_dir, read_config
 CFG = read_config()
 OBJ_NAME = CFG['obj_name']
 SCENE_NAME = CFG['scene_name']
-DATA_NAME = CFG['data_name']
+DATA_NAME = f"{CFG['data_name']}_test"
 N_PAIR = CFG['test_data_size']
 CUT_SIZE = CFG['cut_size']
 
@@ -53,7 +53,6 @@ def trajectory(x):
 
 
 def run():
-    DATA_NAME = f'{DATA_NAME}_test'
     scene = load(f'raw/{SCENE_NAME}_norm.txt')
     # scene_pc = load(f'data/{DATA_NAME}/scene_pc/{SCENE_NAME}_pc.txt')
     obj = load(f'raw/{OBJ_NAME}_norm.txt')
