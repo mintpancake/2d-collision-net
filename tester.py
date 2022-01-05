@@ -14,7 +14,8 @@ OBJ = CFG['obj_name']
 MODEL_NUMBER = CFG['test_model_number']
 DATA_SIZE = CFG['test_data_size']
 
-if __name__ == '__main__':
+
+def run():
     data_name = DATA
     test_data_name = f'{DATA}_test'
 
@@ -61,3 +62,7 @@ if __name__ == '__main__':
         for datum in prob[i]:
             f.write(f'{int(datum)}\n')
         f.close()
+
+
+if __name__ == '__main__':
+    run()

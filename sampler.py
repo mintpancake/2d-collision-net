@@ -55,7 +55,7 @@ def normalize(v):
     return v - g
 
 
-if __name__ == "__main__":
+def run():
     scene = load(f'raw/{SCENE_NAME}.txt')
     obj = load(f'raw/{OBJ_NAME}.txt')
     obj_normalized = normalize(obj)
@@ -68,3 +68,7 @@ if __name__ == "__main__":
     save(obj_pc, f'data/{DATA_NAME}/obj_pc/{OBJ_NAME}_pc.txt')
     save(scene_pc, f'data/{DATA_NAME}_test/scene_pc/{SCENE_NAME}_pc.txt')
     save(obj_pc, f'data/{DATA_NAME}_test/obj_pc/{OBJ_NAME}_pc.txt')
+
+
+if __name__ == "__main__":
+    run()

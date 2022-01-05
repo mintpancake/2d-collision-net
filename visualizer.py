@@ -86,8 +86,7 @@ def draw(idx):
     cv2.imwrite(f'images/{DATA_NAME}/map_{str(idx).zfill(3)}.png', canvas)
 
 
-if __name__ == '__main__':
-    error = 0
+def run():
     for i in range(N):
         draw(i)
     fp_in = f'./images/{DATA_NAME}/map_*.png'
@@ -96,3 +95,7 @@ if __name__ == '__main__':
     img, *imgs = [Image.open(f) for f in sorted(glob.glob(fp_in))]
     img.save(fp=fp_out, format='GIF', append_images=imgs,
              save_all=True, duration=200, loop=0)
+
+
+if __name__ == '__main__':
+    run()

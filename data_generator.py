@@ -47,7 +47,7 @@ def inside(p, scn):
     return abs(angle_sum) > 1
 
 
-if __name__ == "__main__":
+def run():
     scene = load(f'raw/{SCENE_NAME}_norm.txt')
     # scene_pc = load(f'data/{DATA_NAME}/scene_pc/{SCENE_NAME}_pc.txt')
     obj = load(f'raw/{OBJ_NAME}_norm.txt')
@@ -85,3 +85,7 @@ if __name__ == "__main__":
             f'data/{DATA_NAME}/obj_pc/moved/{OBJ_NAME}_pc_{i}.txt', obj_pc_moved)
         save_points(f'data/{DATA_NAME}/pos/pos_{i}.txt', [pos])
         save_gt(f'data/{DATA_NAME}/gt/gt_{i}.txt', gt.reshape(-1))
+
+
+if __name__ == "__main__":
+    run()

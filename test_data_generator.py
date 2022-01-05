@@ -52,7 +52,7 @@ def trajectory(x):
     return y
 
 
-if __name__ == "__main__":
+def run():
     DATA_NAME = f'{DATA_NAME}_test'
     scene = load(f'raw/{SCENE_NAME}_norm.txt')
     # scene_pc = load(f'data/{DATA_NAME}/scene_pc/{SCENE_NAME}_pc.txt')
@@ -90,3 +90,7 @@ if __name__ == "__main__":
             f'data/{DATA_NAME}/obj_pc/moved/{OBJ_NAME}_pc_{i}.txt', obj_pc_moved)
         save_points(f'data/{DATA_NAME}/pos/pos_{i}.txt', [pos])
         save_gt(f'data/{DATA_NAME}/gt/gt_{i}.txt', gt.reshape(-1))
+
+
+if __name__ == "__main__":
+    run()

@@ -16,7 +16,8 @@ DATA = CFG['data_name']
 SCENE = CFG['scene_name']
 OBJ = CFG['obj_name']
 
-if __name__ == '__main__':
+
+def run():
     batch_size = CFG['batch_size']
     learning_rate = CFG['learning_rate']
     epochs = CFG['epochs']
@@ -135,3 +136,7 @@ if __name__ == '__main__':
     f_val_error.close()
 
     print(f'Complete training with {epochs} epochs!')
+
+
+if __name__ == "__main__":
+    run()

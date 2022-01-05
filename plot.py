@@ -21,7 +21,7 @@ def read(file):
     return epoch, val
 
 
-if __name__ == "__main__":
+def run():
     print('Ploting graphs...')
     x, y = read(f'logs/{DATA}/train_loss.csv')
     plt.plot(x, y, color='orange', linestyle='solid',
@@ -64,3 +64,7 @@ if __name__ == "__main__":
     plt.close('all')
 
     print('Done!')
+
+
+if __name__ == "__main__":
+    run()
