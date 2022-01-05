@@ -75,7 +75,12 @@ if __name__ == "__main__":
         for j in range(cut_size):
             for k in range(cut_size):
                 samples = np.array(
-                    [[cut[j], cut[k]], [cut[j+1], cut[k]], [cut[j], cut[k+1]], [cut[j+1], cut[k+1]]])
+                    [[cut[j], cut[k]], [cut[j+1], cut[k]], [cut[j], cut[k+1]], [cut[j+1], cut[k+1]],
+                     [cut[j]+0.025, cut[k]], [cut[j]+0.0125, cut[k] + 0.0125],
+                     [cut[j]+0.0375, cut[k]+0.0125], [cut[j], cut[k]+0.025],
+                     [cut[j]+0.025, cut[k]+0.025], [cut[j]+0.05, cut[k]+0.025],
+                     [cut[j]+0.0125, cut[k]+0.0375], [cut[j]+0.0375, cut[k]+0.0375],
+                     [cut[j]+0.025, cut[k]+0.05]])
                 for point in samples:
                     if inside(point, scene) and inside(point, obj_moved):
                         gt[j, k] = 1

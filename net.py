@@ -166,19 +166,20 @@ class Net(nn.Module):
         b = len(scene_features)
 
         # Get voxel indices for translations
-        trans_inds = self.voxel_inds(trans, scale=2).long()
-        if trans_inds.max() >= scene_features.shape[2]:
-            print(trans[trans_inds.argmax()], trans_inds.max())
-        assert trans_inds.max() < scene_features.shape[2]
-        assert trans_inds.min() >= 0
+        # trans_inds = self.voxel_inds(trans, scale=2).long()
+        # if trans_inds.max() >= scene_features.shape[2]:
+        #     print(trans[trans_inds.argmax()], trans_inds.max())
+        # assert trans_inds.max() < scene_features.shape[2]
+        # assert trans_inds.min() >= 0
 
         # Calculate translation offsets from centers of voxels
-        tr_vox_centers = (
-            self._inds_from_flat(trans_inds, scale=2) * self.vox_size * 2
-            + self.vox_size / 2
-            + self.bounds[0]
-        )
-        trans_offsets = trans - tr_vox_centers.float()
+        # tr_vox_centers = (
+        #     self._inds_from_flat(trans_inds, scale=2) * self.vox_size * 2
+        #     + self.vox_size / 2
+        #     + self.bounds[0]
+        # )
+        # trans_offsets = trans - tr_vox_centers.float()
+        trans_offsets = trans
 
         # Send concatenated features to classifier
         class_in = torch.cat(
@@ -235,11 +236,12 @@ class Net(nn.Module):
 # SCENE = 'scene'
 # OBJ = 'obj'
 # MODEL_NUMBER = 1000
-# DATA_SIZE = 10
+# DATA_SIZE = 13
 # data_name = DATA
 # test_data_name = f'{DATA}_test'
 # device = 'cuda'
-
+# from dataset import Data
+# from torch.utils.data import DataLoader
 # test_data = Data(test_data_name, SCENE, OBJ, 0, DATA_SIZE)
 
 # test_dataloader = DataLoader(

@@ -45,7 +45,7 @@ def load_pred(file):
     return np.array(pred)
 
 
-def transform(v):
+def scale(v):
     v[:, 1] = -v[:, 1]
     v += np.array([0.5, 0.5])
     v *= SIDE_LENGTH
@@ -78,8 +78,8 @@ def draw(idx):
         cv2.line(canvas, [c, 0], [c, SIDE_LENGTH], (127, 127, 127))
         cv2.line(canvas, [0, c], [SIDE_LENGTH, c], (127, 127, 127))
 
-    scene = transform(load(SCENE))
-    obj = transform(load(OBJ)+load(f'{POS}/pos_{idx}.txt'))
+    scene = scale(load(SCENE))
+    obj = scale(load(OBJ)+load(f'{POS}/pos_{idx}.txt'))
     cv2.polylines(canvas, [scene], True, (255, 255, 0), 2)
     cv2.polylines(canvas, [obj], True, (0, 0, 255), 2)
     ensure_dir(f'images/{DATA_NAME}/map_{str(idx).zfill(3)}.png')
