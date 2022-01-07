@@ -15,6 +15,7 @@ CFG = read_config()
 DATA = CFG['data_name']
 SCENE = CFG['scene_name']
 OBJ = CFG['obj_name']
+CHECKPOINT = CFG['checkpoint']
 
 
 def run():
@@ -126,7 +127,7 @@ def run():
         f_val_error.write(f'{t},{mean_error}\n')
         print(f'val error: {mean_error}')
 
-        if t % 50 == 0:
+        if t % CHECKPOINT == 0:
             ensure_dir(f'models/{DATA}/model_{t}.pth')
             torch.save(model.state_dict(), f'models/{DATA}/model_{t}.pth')
 

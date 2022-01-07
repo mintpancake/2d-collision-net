@@ -1,4 +1,5 @@
 import numpy as np
+from shapely.geometry import Polygon
 from utils import ensure_dir, read_config
 
 
@@ -38,17 +39,10 @@ def save_gt(file, data):
     f.close()
 
 
-def inside(p, scn):
-    angle_sum = 0
-    for i in range(len(scn)):
-        a = scn[i]
-        b = scn[(i + 1) % len(scn)]
-        angle_sum += np.arctan2(np.cross(a - p, b - p), np.dot(a - p, b - p))
-    return abs(angle_sum) > 1
-
-
 def trajectory(x):
-    y = -x
+    y = x
+    # y = -x
+    # y = 4*pow(x, 2)-0.5
     return y
 
 
@@ -57,33 +51,29 @@ def run():
     # scene_pc = load(f'data/{DATA_NAME}/scene_pc/{SCENE_NAME}_pc.txt')
     obj = load(f'raw/{OBJ_NAME}_norm.txt')
     obj_pc = load(f'data/{DATA_NAME}/obj_pc/{OBJ_NAME}_pc.txt')
-    grid_size = 1 / CUT_SIZE
-
+    scene_poly = Polygon(scene)
     n = N_PAIR
+    cut_size = CUT_SIZE
     poses = np.linspace(-0.499, 0.499, n, dtype=np.float32)
+    print('Generating', end=' ')
     for i in range(n):
-        print(f'Generating pair {i+1}...')
-
+        print(i, end=' ')
+        gt = np.zeros([cut_size, cut_size], dtype=int)
         pos = np.array([poses[i], trajectory(poses[i])])
-
         obj_pc_moved = obj_pc + pos
         obj_moved = obj + pos
-        cut_size = CUT_SIZE
-        cut = np.linspace(-0.5, 0.5, cut_size+1, dtype=np.float32)
-        gt = np.zeros([cut_size, cut_size], dtype=int)
-        for j in range(cut_size):
-            for k in range(cut_size):
-                samples = np.array(
-                    [[cut[j], cut[k]], [cut[j+1], cut[k]], [cut[j], cut[k+1]], [cut[j+1], cut[k+1]],
-                     [cut[j]+0.025, cut[k]], [cut[j]+0.0125, cut[k] + 0.0125],
-                     [cut[j]+0.0375, cut[k]+0.0125], [cut[j], cut[k]+0.025],
-                     [cut[j]+0.025, cut[k]+0.025], [cut[j]+0.05, cut[k]+0.025],
-                     [cut[j]+0.0125, cut[k]+0.0375], [cut[j]+0.0375, cut[k]+0.0375],
-                     [cut[j]+0.025, cut[k]+0.05]])
-                for point in samples:
-                    if inside(point, scene) and inside(point, obj_moved):
+        obj_moved_poly = Polygon(obj_moved)
+        inter_poly = scene_poly.intersection(obj_moved_poly)
+
+        if not inter_poly.is_empty:
+            cut = np.linspace(-0.5, 0.5, cut_size+1, dtype=np.float32)
+            for j in range(cut_size):
+                for k in range(cut_size):
+                    grid = np.array(
+                        [[cut[j], cut[k]], [cut[j+1], cut[k]], [cut[j+1], cut[k+1]], [cut[j], cut[k+1]]])
+                    grid_poly = Polygon(grid)
+                    if inter_poly.intersects(grid_poly):
                         gt[j, k] = 1
-                        break
 
         save_points(
             f'data/{DATA_NAME}/obj_pc/moved/{OBJ_NAME}_pc_{i}.txt', obj_pc_moved)
