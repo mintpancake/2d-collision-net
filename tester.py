@@ -44,7 +44,7 @@ def run():
             sc, oc, pos, label = sc.to(device), oc.to(
                 device), pos.to(device), label.to(device)
             curr_batch_size = sc.shape[0]
-            pred = model(sc, oc, pos)
+            pred = model(sc, oc, pos, test=True, data_name=test_data_name)
             pred = pred.squeeze()
             prob = torch.sigmoid(pred)
             prob[prob >= 0.5] = 1

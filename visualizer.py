@@ -80,8 +80,12 @@ def draw(idx):
 
     scene = scale(load(SCENE))
     obj = scale(load(OBJ)+load(f'{POS}/pos_{idx}.txt'))
-    cv2.polylines(canvas, [scene], True, (255, 255, 0), 2)
-    cv2.polylines(canvas, [obj], True, (0, 0, 255), 2)
+    cv2.polylines(canvas, [scene], True, (255, 255, 0), 3)
+    cv2.polylines(canvas, [obj], True, (0, 0, 255), 3)
+    pointnet = scale(
+        load(f'data/{DATA_NAME}/pointnet/samples_{str(idx).zfill(3)}.txt'))
+    for point in pointnet:
+        cv2.circle(canvas, point, 1, (255, 255, 255), -1)
     ensure_dir(f'images/{DATA_NAME}/map_{str(idx).zfill(3)}.png')
     cv2.imwrite(f'images/{DATA_NAME}/map_{str(idx).zfill(3)}.png', canvas)
 

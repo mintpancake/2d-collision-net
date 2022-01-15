@@ -26,7 +26,7 @@ def run_without_regeneration():
 
 
 def run_whatever():
-    run()
+    run_without_regeneration()
 
 if __name__ == "__main__":
     run_whatever()

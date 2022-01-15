@@ -40,9 +40,9 @@ def save_gt(file, data):
 
 
 def trajectory(x):
-    y = x
+    # y = x
     # y = -x
-    # y = 4*pow(x, 2)-0.5
+    y = 4*pow(x, 2)-0.5
     return y
 
 

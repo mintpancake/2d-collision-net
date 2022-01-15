@@ -1,3 +1,5 @@
+from torch.utils.data import DataLoader
+from dataset import Data
 import numpy as np
 import torch
 import torch.nn as nn
@@ -5,7 +7,7 @@ from pytorch_utils import FC, Conv1d, Conv2d
 import torch_scatter
 from torch.cuda.amp import autocast
 from pointnet2_utils import PointNetSetAbstraction
-from utils import read_config
+from utils import read_config, ensure_dir
 
 CFG = read_config()
 CUT_SIZE = CFG['cut_size']
@@ -98,9 +100,9 @@ class Net(nn.Module):
             FC(CLS_FC[2], 1, activation=None)
         )
 
-    def forward(self, scene_pc, obj_pc, pos):
+    def forward(self, scene_pc, obj_pc, pos, test=False, data_name=''):
         scene_features = self.get_scene_features(scene_pc)
-        obj_features = self.get_obj_features(obj_pc)
+        obj_features = self.get_obj_features(obj_pc, test, data_name)
         res = self.classify_tfs(obj_features, scene_features, pos)
         return res
 
@@ -149,7 +151,7 @@ class Net(nn.Module):
 
         return stack_vox_features
 
-    def get_obj_features(self, obj_pc):
+    def get_obj_features(self, obj_pc, test, data_name):
         obj_xy, obj_features = self._break_up_pc(obj_pc)
 
         obj_xy.transpose_(2, 1)
@@ -157,6 +159,16 @@ class Net(nn.Module):
             obj_xy, obj_features = self.obj_SA_modules[i](
                 obj_xy, obj_features
             )
+            if test and i == 0 and data_name != '':
+                data = obj_xy.transpose(2, 1)
+                for b in range(data.shape[0]):
+                    file = f'data/{data_name}/pointnet/samples_{str(b).zfill(3)}.txt'
+                    ensure_dir(file)
+                    f = open(file, 'w')
+                    for point in data[b]:  # One batch only
+                        x, y = point
+                        f.write(f'{x} {y}\n')
+                    f.close()
         for i in range(len(self.obj_FCs)):
             obj_features = self.obj_FCs[i](obj_features.squeeze(axis=-1))
 
@@ -222,7 +234,7 @@ class Net(nn.Module):
         return torch.stack((ind0, ind1), dim=-1)
 
 
-# model = Net().to('cuda')
+model = Net().to('cuda')
 # s = torch.Tensor([[[-0.49, -0.49], [-0.24, -0.24], [0.24, 0.24], [0.49, 0.49]], [[0.41, 0.41], [0.31, 0.31],
 #                                                                                  [-0.26, -0.26], [0.14, -0.14]], [[-0.31, 0.31], [-0.29, 0.29], [-0.02, 0.02], [0.09, -0.09]]])
 # o = torch.Tensor([[[-0.49, -0.49], [-0.24, -0.24], [0.24, 0.24], [0.49, 0.49]], [[0.41, 0.41], [0.31, 0.31],
@@ -232,25 +244,23 @@ class Net(nn.Module):
 #                   [0.09, 0.09]])
 # s, o, sp = s.to('cuda'), o.to('cuda'), sp.to('cuda')
 
-# DATA = 'data1'
-# SCENE = 'scene'
-# OBJ = 'obj'
-# MODEL_NUMBER = 1000
-# DATA_SIZE = 13
-# data_name = DATA
-# test_data_name = f'{DATA}_test'
-# device = 'cuda'
-# from dataset import Data
-# from torch.utils.data import DataLoader
-# test_data = Data(test_data_name, SCENE, OBJ, 0, DATA_SIZE)
+DATA = 'data1'
+SCENE = 'scene'
+OBJ = 'obj'
+MODEL_NUMBER = 1000
+DATA_SIZE = 13
+data_name = DATA
+test_data_name = f'{DATA}_test'
+device = 'cuda'
+test_data = Data(test_data_name, SCENE, OBJ, 0, DATA_SIZE)
 
-# test_dataloader = DataLoader(
-#     test_data, batch_size=DATA_SIZE, shuffle=False, drop_last=False)
-# for batch, (data, label) in enumerate(test_dataloader):
-#     sc, oc, pos = data
-#     sc, oc, pos, label = sc.to(device), oc.to(
-#         device), pos.to(device), label.to(device)
-#     res = model(sc, oc, pos)
-# res = res.squeeze()
-# res = res.reshape(res.shape[0], 20, 20)
-# print(res.shape)
+test_dataloader = DataLoader(
+    test_data, batch_size=DATA_SIZE, shuffle=False, drop_last=False)
+for batch, (data, label) in enumerate(test_dataloader):
+    sc, oc, pos = data
+    sc, oc, pos, label = sc.to(device), oc.to(
+        device), pos.to(device), label.to(device)
+    res = model(sc, oc, pos, True)
+res = res.squeeze()
+res = res.reshape(res.shape[0], 20, 20)
+print(res.shape)

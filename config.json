@@ -1,7 +1,7 @@
 {
-    "obj_name": "obj",
-    "scene_name": "scene",
-    "data_name": "data1",
+    "obj_name": "obj_delta",
+    "scene_name": "scene_delta",
+    "data_name": "data3",
     "cut_size": 20,
     "data_size": 1000,
     "tran_test_split": 0.8,
